@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { ShoppingBag, Search, Heart, Menu, X } from "lucide-react";
+import { ShoppingBag, Search, Heart, Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { user, signOut, loading } = useAuth();
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-card">
@@ -51,6 +54,32 @@ const Header = () => {
                 0
               </span>
             </Button>
+            
+            {!loading && (
+              user ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">
+                    Welcome, {user.email?.split('@')[0]}
+                  </span>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={signOut}
+                    className="flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Sign In
+                  </Button>
+                </Link>
+              )
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -99,6 +128,30 @@ const Header = () => {
                     0
                   </span>
                 </Button>
+              </div>
+              
+              <div className="pt-4 border-t border-border">
+                {user ? (
+                  <div className="space-y-2">
+                    <div className="py-2 text-sm text-muted-foreground">
+                      Welcome, {user.email?.split('@')[0]}
+                    </div>
+                    <button 
+                      onClick={signOut}
+                      className="block w-full py-2 text-left text-foreground hover:text-primary transition-colors"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <Link 
+                    to="/auth" 
+                    className="block py-2 text-foreground hover:text-primary transition-colors"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                )}
               </div>
             </div>
           </div>
