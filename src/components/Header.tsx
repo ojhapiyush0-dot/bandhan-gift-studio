@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { ShoppingBag, Search, Heart, Menu, X, User, LogOut } from "lucide-react";
+import { Heart, Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import Cart from "./Cart";
+import SearchProducts from "./SearchProducts";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,22 +39,11 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input
-                placeholder="Search gifts..."
-                className="pl-10 w-64 bg-muted/50"
-              />
-            </div>
+            <SearchProducts />
             <Button variant="ghost" size="icon">
               <Heart className="w-5 h-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingBag className="w-5 h-5" />
-              <span className="absolute -top-2 -right-2 bg-secondary text-secondary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                0
-              </span>
-            </Button>
+            <Cart />
             
             {!loading && (
               user ? (
@@ -97,13 +87,7 @@ const Header = () => {
         {isMenuOpen && (
           <div className="md:hidden border-t border-border py-4">
             <div className="space-y-4">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  placeholder="Search gifts..."
-                  className="pl-10 w-full bg-muted/50"
-                />
-              </div>
+              <SearchProducts />
               <nav className="space-y-2">
                 <a href="#" className="block text-foreground hover:text-primary transition-smooth py-2">
                   Hampers
@@ -122,12 +106,7 @@ const Header = () => {
                 <Button variant="ghost" size="icon">
                   <Heart className="w-5 h-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="relative">
-                  <ShoppingBag className="w-5 h-5" />
-                  <span className="absolute -top-2 -right-2 bg-secondary text-secondary-foreground text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                    0
-                  </span>
-                </Button>
+                <Cart />
               </div>
               
               <div className="pt-4 border-t border-border">

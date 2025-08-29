@@ -1,8 +1,10 @@
 import { Heart, Star, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCart } from "@/hooks/useCart";
 
 interface ProductCardProps {
+  id: string;
   name: string;
   price: number;
   originalPrice?: number;
@@ -10,17 +12,29 @@ interface ProductCardProps {
   rating: number;
   reviews: number;
   badge?: string;
+  stockQuantity?: number;
 }
 
 const ProductCard = ({ 
+  id,
   name, 
   price, 
   originalPrice, 
   image, 
   rating, 
   reviews, 
-  badge 
+  badge,
+  stockQuantity = 0
 }: ProductCardProps) => {
+  const { addToCart, loading } = useCart();
+
+  const formatPrice = (price: number) => {
+    return `₹${(price / 100).toLocaleString()}`;
+  };
+
+  const handleAddToCart = () => {
+    addToCart(id);
+  };
   return (
     <Card className="group overflow-hidden border-0 shadow-card hover:shadow-premium transition-all duration-500 hover:-translate-y-2 bg-card">
       <div className="relative overflow-hidden">
@@ -49,9 +63,11 @@ const ProductCard = ({
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-transparent to-transparent p-6 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button 
             className="w-full gradient-primary text-primary-foreground shadow-gold"
+            onClick={handleAddToCart}
+            disabled={loading || stockQuantity <= 0}
           >
             <ShoppingBag className="w-4 h-4 mr-2" />
-            Add to Cart
+            {stockQuantity <= 0 ? 'Out of Stock' : 'Add to Cart'}
           </Button>
         </div>
       </div>
@@ -71,10 +87,10 @@ const ProductCard = ({
           </div>
           
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-primary">₹{price.toLocaleString()}</span>
+            <span className="text-2xl font-bold text-primary">{formatPrice(price)}</span>
             {originalPrice && (
               <span className="text-lg text-muted-foreground line-through">
-                ₹{originalPrice.toLocaleString()}
+                {formatPrice(originalPrice)}
               </span>
             )}
             {originalPrice && (

@@ -1,51 +1,12 @@
 import ProductCard from "./ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import product1 from "@/assets/product-1.jpg";
-import product2 from "@/assets/product-2.jpg";
-import product3 from "@/assets/product-3.jpg";
-import giftCollection from "@/assets/gift-collection.jpg";
-
-const products = [
-  {
-    name: "Festive Delights Hamper",
-    price: 2499,
-    originalPrice: 3199,
-    image: product1,
-    rating: 4.8,
-    reviews: 124,
-    badge: "Bestseller"
-  },
-  {
-    name: "Premium Corporate Gift Box",
-    price: 1899,
-    originalPrice: 2299,
-    image: product2,
-    rating: 4.9,
-    reviews: 89,
-    badge: "New"
-  },
-  {
-    name: "Personalized Love Box",
-    price: 1599,
-    originalPrice: 1999,
-    image: product3,
-    rating: 4.7,
-    reviews: 156,
-    badge: "Popular"
-  },
-  {
-    name: "Luxury Collection Set",
-    price: 3999,
-    originalPrice: 4999,
-    image: giftCollection,
-    rating: 4.9,
-    reviews: 78,
-    badge: "Premium"
-  }
-];
+import { useProducts } from "@/hooks/useProducts";
 
 const FeaturedProducts = () => {
+  const { products, loading, selectedCategory, setSelectedCategory } = useProducts();
+  
+  const featuredProducts = products.slice(0, 4);
   return (
     <section className="py-20 gradient-subtle">
       <div className="container mx-auto px-4">
@@ -58,17 +19,56 @@ const FeaturedProducts = () => {
           </p>
           
           <div className="flex items-center justify-center gap-4">
-            <Button variant="outline" size="sm">All</Button>
-            <Button variant="ghost" size="sm">Bestsellers</Button>
-            <Button variant="ghost" size="sm">New Arrivals</Button>
-            <Button variant="ghost" size="sm">On Sale</Button>
+            <Button 
+              variant={selectedCategory === null ? "default" : "outline"} 
+              size="sm"
+              onClick={() => setSelectedCategory(null)}
+            >
+              All
+            </Button>
+            <Button 
+              variant={selectedCategory === 'bestseller' ? "default" : "ghost"} 
+              size="sm"
+              onClick={() => setSelectedCategory('bestseller')}
+            >
+              Bestsellers
+            </Button>
+            <Button 
+              variant={selectedCategory === 'new' ? "default" : "ghost"} 
+              size="sm"
+              onClick={() => setSelectedCategory('new')}
+            >
+              New Arrivals
+            </Button>
+            <Button 
+              variant={selectedCategory === 'sale' ? "default" : "ghost"} 
+              size="sm"
+              onClick={() => setSelectedCategory('sale')}
+            >
+              On Sale
+            </Button>
           </div>
         </div>
         
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {products.map((product, index) => (
-            <ProductCard key={index} {...product} />
-          ))}
+          {loading ? (
+            <div className="col-span-full text-center py-8">Loading products...</div>
+          ) : (
+            featuredProducts.map((product) => (
+              <ProductCard 
+                key={product.id} 
+                id={product.id}
+                name={product.name}
+                price={product.price}
+                originalPrice={product.original_price}
+                image={product.image_url || '/placeholder.svg'}
+                rating={product.rating}
+                reviews={product.reviews_count}
+                badge={product.badge}
+                stockQuantity={product.stock_quantity}
+              />
+            ))
+          )}
         </div>
         
         <div className="text-center">
