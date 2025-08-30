@@ -27,12 +27,12 @@ interface CartContextType {
   totalPrice: number;
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined);
+const CartContext = createContext<CartContextType | null>(null);
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { toast } = useToast();
 
   const fetchCartItems = async () => {
@@ -66,8 +66,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    fetchCartItems();
-  }, [user]);
+    if (!authLoading) {
+      fetchCartItems();
+    }
+  }, [user, authLoading]);
 
   const addToCart = async (productId: string, quantity: number = 1) => {
     if (!user) {
@@ -194,7 +196,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
 export const useCart = () => {
   const context = useContext(CartContext);
-  if (!context) {
+  if (context === null) {
     throw new Error('useCart must be used within a CartProvider');
   }
   return context;
