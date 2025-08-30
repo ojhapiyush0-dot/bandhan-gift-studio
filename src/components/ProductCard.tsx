@@ -2,6 +2,7 @@ import { Heart, Star, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
 
 interface ProductCardProps {
   id: string;
@@ -27,6 +28,7 @@ const ProductCard = ({
   stockQuantity = 0
 }: ProductCardProps) => {
   const { addToCart, loading } = useCart();
+  const { addToWishlist, removeFromWishlist, isInWishlist, loading: wishlistLoading } = useWishlist();
 
   const formatPrice = (price: number) => {
     return `₹${(price / 100).toLocaleString()}`;
@@ -34,6 +36,14 @@ const ProductCard = ({
 
   const handleAddToCart = () => {
     addToCart(id);
+  };
+
+  const handleWishlistToggle = () => {
+    if (isInWishlist(id)) {
+      removeFromWishlist(id);
+    } else {
+      addToWishlist(id);
+    }
   };
   return (
     <Card className="group overflow-hidden border-0 shadow-card hover:shadow-premium transition-all duration-500 hover:-translate-y-2 bg-card">
@@ -47,9 +57,13 @@ const ProductCard = ({
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-4 right-4 z-10 bg-card/80 backdrop-blur-sm hover:bg-card hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={handleWishlistToggle}
+          disabled={wishlistLoading}
+          className={`absolute top-4 right-4 z-10 bg-card/80 backdrop-blur-sm hover:bg-card hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity ${
+            isInWishlist(id) ? 'text-red-500 hover:text-red-600' : ''
+          }`}
         >
-          <Heart className="w-4 h-4" />
+          <Heart className={`w-4 h-4 ${isInWishlist(id) ? 'fill-current' : ''}`} />
         </Button>
         
         <div className="aspect-square overflow-hidden">

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Heart, Menu, X, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
+import { useWishlist } from "@/hooks/useWishlist";
 import { Link } from "react-router-dom";
 import Cart from "./Cart";
 import SearchProducts from "./SearchProducts";
@@ -9,6 +11,8 @@ import SearchProducts from "./SearchProducts";
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, signOut, loading } = useAuth();
+  const { totalItems } = useCart();
+  const { items: wishlistItems } = useWishlist();
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-card">
@@ -23,25 +27,29 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a href="#" className="text-foreground hover:text-primary transition-smooth">
-              Hampers
-            </a>
-            <a href="#" className="text-foreground hover:text-primary transition-smooth">
-              Personalized Gifts
-            </a>
-            <a href="#" className="text-foreground hover:text-primary transition-smooth">
-              Festive Specials
-            </a>
-            <a href="#" className="text-foreground hover:text-primary transition-smooth">
-              Corporate Gifting
-            </a>
+            <Link to="/" className="text-foreground hover:text-primary transition-smooth">
+              Home
+            </Link>
+            <Link to="/about" className="text-foreground hover:text-primary transition-smooth">
+              About
+            </Link>
+            <Link to="/contact" className="text-foreground hover:text-primary transition-smooth">
+              Contact
+            </Link>
           </nav>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             <SearchProducts />
-            <Button variant="ghost" size="icon">
-              <Heart className="w-5 h-5" />
+            <Button variant="ghost" size="icon" className="relative" asChild>
+              <Link to="/wishlist">
+                <Heart className="w-5 h-5" />
+                {wishlistItems.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {wishlistItems.length}
+                  </span>
+                )}
+              </Link>
             </Button>
             <Cart />
             
@@ -89,22 +97,21 @@ const Header = () => {
             <div className="space-y-4">
               <SearchProducts />
               <nav className="space-y-2">
-                <a href="#" className="block text-foreground hover:text-primary transition-smooth py-2">
-                  Hampers
-                </a>
-                <a href="#" className="block text-foreground hover:text-primary transition-smooth py-2">
-                  Personalized Gifts
-                </a>
-                <a href="#" className="block text-foreground hover:text-primary transition-smooth py-2">
-                  Festive Specials
-                </a>
-                <a href="#" className="block text-foreground hover:text-primary transition-smooth py-2">
-                  Corporate Gifting
-                </a>
+                <Link to="/" className="block text-foreground hover:text-primary transition-smooth py-2">
+                  Home
+                </Link>
+                <Link to="/about" className="block text-foreground hover:text-primary transition-smooth py-2">
+                  About
+                </Link>
+                <Link to="/contact" className="block text-foreground hover:text-primary transition-smooth py-2">
+                  Contact
+                </Link>
               </nav>
               <div className="flex items-center space-x-4 pt-4 border-t border-border">
-                <Button variant="ghost" size="icon">
-                  <Heart className="w-5 h-5" />
+                <Button variant="ghost" size="icon" asChild>
+                  <Link to="/wishlist">
+                    <Heart className="w-5 h-5" />
+                  </Link>
                 </Button>
                 <Cart />
               </div>

@@ -1,6 +1,7 @@
 import { Instagram, MessageCircle, Mail, Phone, MapPin, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -16,13 +17,28 @@ const Footer = () => {
               Every hamper is crafted with love and attention to detail.
             </p>
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-primary-foreground hover:bg-primary-foreground/10"
+                onClick={() => window.open('https://instagram.com/bandhanbox', '_blank')}
+              >
                 <Instagram className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-primary-foreground hover:bg-primary-foreground/10"
+                onClick={() => window.open('https://wa.me/919876543210', '_blank')}
+              >
                 <MessageCircle className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="text-primary-foreground hover:bg-primary-foreground/10"
+                onClick={() => window.open('mailto:hello@bandhanbox.com')}
+              >
                 <Mail className="w-5 h-5" />
               </Button>
             </div>
@@ -32,18 +48,18 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-serif font-semibold mb-6">Quick Links</h3>
             <div className="space-y-3">
-              <a href="#" className="block text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                Festival Hampers
-              </a>
-              <a href="#" className="block text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                Corporate Gifts
-              </a>
-              <a href="#" className="block text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                Personalized Boxes
-              </a>
-              <a href="#" className="block text-primary-foreground/80 hover:text-primary-foreground transition-colors">
-                Wedding Favors
-              </a>
+              <Link to="/" className="block text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                Home
+              </Link>
+              <Link to="/about" className="block text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                About Us
+              </Link>
+              <Link to="/contact" className="block text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                Contact Us
+              </Link>
+              <Link to="/wishlist" className="block text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                My Wishlist
+              </Link>
               <a href="#" className="block text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                 Bulk Orders
               </a>
