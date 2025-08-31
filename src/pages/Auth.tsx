@@ -9,6 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Gift, Mail, Lock, User, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { Link } from 'react-router-dom';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 
 const Auth = () => {
   const [email, setEmail] = useState('');
@@ -17,8 +18,11 @@ const Auth = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [otp, setOtp] = useState('');
+  const [showOTP, setShowOTP] = useState(false);
+  const [signupEmail, setSignupEmail] = useState('');
   
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, verifyOTP, user } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -54,7 +58,24 @@ const Auth = () => {
     if (error) {
       setError(error.message);
     } else {
-      setMessage('Check your email for the confirmation link!');
+      setSignupEmail(email);
+      setShowOTP(true);
+      setMessage('Check your email for the verification code!');
+    }
+    setLoading(false);
+  };
+
+  const handleVerifyOTP = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    
+    const { error } = await verifyOTP(signupEmail, otp);
+    
+    if (error) {
+      setError(error.message);
+    } else {
+      navigate('/');
     }
     setLoading(false);
   };
@@ -78,17 +99,64 @@ const Auth = () => {
 
         <Card className="shadow-premium border-0">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-serif text-center">Welcome</CardTitle>
+            <CardTitle className="text-2xl font-serif text-center">
+              {showOTP ? 'Verify Your Email' : 'Welcome'}
+            </CardTitle>
             <CardDescription className="text-center">
-              Sign in to your account or create a new one
+              {showOTP ? 'Enter the verification code sent to your email' : 'Sign in to your account or create a new one'}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
+            {showOTP ? (
+              <form onSubmit={handleVerifyOTP} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="otp">Verification Code</Label>
+                  <div className="flex justify-center">
+                    <InputOTP
+                      value={otp}
+                      onChange={setOtp}
+                      maxLength={6}
+                    >
+                      <InputOTPGroup>
+                        <InputOTPSlot index={0} />
+                        <InputOTPSlot index={1} />
+                        <InputOTPSlot index={2} />
+                        <InputOTPSlot index={3} />
+                        <InputOTPSlot index={4} />
+                        <InputOTPSlot index={5} />
+                      </InputOTPGroup>
+                    </InputOTP>
+                  </div>
+                </div>
+
+                <Button 
+                  type="submit" 
+                  className="w-full gradient-primary text-primary-foreground shadow-premium" 
+                  disabled={loading || otp.length !== 6}
+                >
+                  {loading ? 'Verifying...' : 'Verify Code'}
+                </Button>
+
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  className="w-full" 
+                  onClick={() => {
+                    setShowOTP(false);
+                    setOtp('');
+                    setError('');
+                    setMessage('');
+                  }}
+                >
+                  Back to Sign Up
+                </Button>
+              </form>
+            ) : (
+              <Tabs defaultValue="signin" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="signin">Sign In</TabsTrigger>
+                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                </TabsList>
               
               <TabsContent value="signin" className="space-y-4">
                 <form onSubmit={handleSignIn} className="space-y-4">
@@ -195,6 +263,7 @@ const Auth = () => {
                 </form>
               </TabsContent>
             </Tabs>
+            )}
 
             {error && (
               <Alert className="mt-4 border-destructive/50 text-destructive">
