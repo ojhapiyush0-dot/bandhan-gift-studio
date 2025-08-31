@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Heart, Menu, X, User, LogOut } from "lucide-react";
+import { Heart, Menu, X, User, LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
@@ -7,12 +7,14 @@ import { useWishlist } from "@/hooks/useWishlist";
 import { Link } from "react-router-dom";
 import Cart from "./Cart";
 import SearchProducts from "./SearchProducts";
+import { useAdmin } from "@/hooks/useAdmin";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, signOut, loading } = useAuth();
   const { totalItems } = useCart();
   const { items: wishlistItems = [] } = useWishlist();
+  const { isAdmin } = useAdmin();
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-card">
@@ -52,7 +54,14 @@ const Header = () => {
               </Link>
             </Button>
             <Cart />
-            
+            {isAdmin && (
+              <Link to="/admin">
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Admin
+                </Button>
+              </Link>
+            )}
             {!loading && (
               user ? (
                 <div className="flex items-center gap-2">
@@ -114,6 +123,14 @@ const Header = () => {
                   </Link>
                 </Button>
                 <Cart />
+                {isAdmin && (
+                  <Link to="/admin" className="ml-auto">
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <Shield className="w-4 h-4" />
+                      Admin
+                    </Button>
+                  </Link>
+                )}
               </div>
               
               <div className="pt-4 border-t border-border">

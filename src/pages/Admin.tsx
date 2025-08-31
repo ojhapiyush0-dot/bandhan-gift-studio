@@ -12,9 +12,11 @@ import { useProducts, Product } from "@/hooks/useProducts";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAdmin } from "@/hooks/useAdmin";
 
 const Admin = () => {
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const { products, refetch } = useProducts();
   const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
@@ -141,13 +143,13 @@ const Admin = () => {
 
   const formatPrice = (price: number) => `₹${(price / 100).toLocaleString()}`;
 
-  if (!user) {
+  if (!user || !isAdmin) {
     return (
       <div className="container mx-auto px-4 py-8">
         <Card>
           <CardContent className="p-6 text-center">
             <h2 className="text-2xl font-bold mb-4">Access Denied</h2>
-            <p>Please sign in to access the admin panel.</p>
+            <p>Only admins can access the admin panel.</p>
           </CardContent>
         </Card>
       </div>
