@@ -12,7 +12,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, signOut, loading } = useAuth();
   const { totalItems } = useCart();
-  const { items: wishlistItems } = useWishlist();
+  const { items: wishlistItems = [] } = useWishlist();
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border shadow-card">
