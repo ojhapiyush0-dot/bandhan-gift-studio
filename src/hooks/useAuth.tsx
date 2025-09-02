@@ -26,6 +26,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+
+        // Ensure roles (like admin) are assigned for the current user
+        if (session?.user) {
+          setTimeout(() => {
+            supabase.rpc('ensure_admin_for_current_user')
+          }, 0)
+        }
       }
     );
 
@@ -34,6 +41,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+
+      if (session?.user) {
+        // Assign roles for existing session too
+        supabase.rpc('ensure_admin_for_current_user')
+      }
     });
 
     return () => subscription.unsubscribe();
