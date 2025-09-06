@@ -162,7 +162,7 @@ const Admin = () => {
         <h1 className="text-3xl font-bold">Admin Dashboard</h1>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button onClick={() => { resetForm(); setIsOpen(true); }}>
+            <Button onClick={resetForm}>
               <Plus className="w-4 h-4 mr-2" />
               Add Product
             </Button>
